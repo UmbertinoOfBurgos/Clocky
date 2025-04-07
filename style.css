@@ -1,0 +1,238 @@
+body {
+    display: flex;
+    flex-direction: column; /* Stack setup and timer vertically */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #111; /* Dark background */
+    color: #eee; /* Light text for setup */
+    font-family: sans-serif;
+    margin: 0;
+    padding: 10px;
+    box-sizing: border-box;
+    touch-action: manipulation; /* Prevent double-tap zoom on mobile */
+}
+
+.timer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; /* Reduced gap */
+    background-color: #222; /* Slightly lighter dark */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 400px;
+}
+
+.player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Center content vertically */
+    width: 100%;
+    min-height: 150px; /* Ensure a minimum tappable height */
+    padding: 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, border 0.3s ease;
+    cursor: default; /* Default cursor */
+    border: 3px solid transparent; /* Placeholder for active indicator */
+    box-sizing: border-box;
+    position: relative; /* For potential future absolute elements */
+}
+
+.player-1 {
+    order: 1;
+}
+
+.player-2 {
+    order: 3;
+}
+
+.controls {
+    order: 2;
+    display: flex;
+    gap: 15px;
+}
+
+/* Active player styling */
+.player.active {
+    background-color: #333; /* Slightly darker when active but game not running */
+}
+
+/* Active and RUNNING game styling */
+.player.active.running {
+    border-color: #4CAF50; /* Green border indicates tappable */
+    cursor: pointer; /* Pointer only when active and running */
+}
+
+/* Inactive player */
+.player:not(.active) {
+    background-color: #1a1a1a; /* Even darker when inactive */
+    opacity: 0.7;
+}
+
+.time {
+    font-size: 3.5em;
+    font-weight: bold;
+    color: #0f0; /* Green numbers */
+    margin-bottom: 10px;
+    font-family: 'Courier New', Courier, monospace; /* Monospace for consistent width */
+    transition: color 0.3s ease;
+}
+
+.time.low-time {
+    color: #f00; /* Red numbers when low */
+}
+
+.player-label {
+    font-size: 1.2em;
+    color: #ccc;
+}
+
+.controls button {
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.controls button:hover {
+    background-color: #0056b3;
+}
+
+.controls button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
+.controls button#reset {
+    background-color: #dc3545;
+}
+
+.controls button#reset:hover {
+    background-color: #c82333;
+}
+
+/* --- Game Running State --- */
+
+body.game-running {
+    padding: 0; /* Remove body padding when game is running */
+}
+
+body.game-running .time-setup {
+    display: none; /* Hide the setup controls */
+}
+
+body.game-running .timer-container {
+    width: 100%;
+    max-width: none;
+    height: 100vh; /* Full viewport height */
+    padding: 0;
+    gap: 0; /* Remove gap between players */
+    border-radius: 0;
+    box-shadow: none;
+    flex-direction: column; /* Ensure column layout */
+    justify-content: space-between; /* Push players to top/bottom */
+}
+
+body.game-running .player {
+    width: 100%;
+    height: 50vh; /* Each player takes half the screen height */
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    /* Keep top/bottom border for active state */
+    justify-content: center; /* Ensure content is centered */
+    min-height: auto; /* Override previous min-height */
+}
+
+body.game-running .player-1 {
+    order: 1;
+    border-bottom: 3px solid transparent; /* Reset border for split view */
+}
+body.game-running .player-2 {
+    order: 2; /* Bring P2 up visually */
+    border-top: 3px solid transparent; /* Reset border for split view */
+}
+
+/* Active player border indication in running state */
+body.game-running .player.active.running {
+    border-color: #4CAF50;
+}
+
+body.game-running .controls {
+    display: none; /* Hide the central controls */
+}
+
+body.game-running .time {
+    font-size: 18vh; /* Make time huge relative to viewport height */
+    line-height: 1; /* Adjust line height for large font */
+}
+
+body.game-running .player-label {
+    font-size: 5vh; /* Scale label too */
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+    .timer-container {
+        flex-direction: row;
+        justify-content: space-around;
+        width: 90%;
+        max-width: 750px;
+        gap: 25px;
+    }
+    .player {
+        width: 40%; /* Adjust player width */
+        min-height: 200px;
+    }
+    .player-1 {
+        order: 1;
+    }
+    .controls {
+        order: 2;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .player-2 {
+        order: 3;
+    }
+     .time {
+        font-size: 4.5em;
+    }
+}
+
+/* Adjustments for Game Running state on wider screens (optional, current is column) */
+/* If you wanted side-by-side full height on landscape/desktop: */
+/*
+@media (min-width: 768px) and (orientation: landscape) {
+    body.game-running .timer-container {
+        flex-direction: row;
+    }
+    body.game-running .player {
+        width: 50vw;
+        height: 100vh;
+    }
+    body.game-running .player-1 {
+        order: 1;
+        border-right: 3px solid transparent;
+        border-bottom: none;
+    }
+    body.game-running .player-2 {
+        order: 2;
+        border-left: 3px solid transparent;
+        border-top: none;
+    }
+    body.game-running .time {
+        font-size: 18vw; 
+    }
+    body.game-running .player-label {
+        font-size: 5vw;
+    }
+}*/
